@@ -9,6 +9,25 @@
   min-height: 228px;
   width: 500px;
   border-radius: 5px;
+  flex-direction: column; /* Align children vertically */
+  align-items: center; /* Center horizontally */
+}
+input[type="text"],
+button {
+  margin-top: 10px; /* Add some space between input and button */
+}
+
+button {
+  padding: 10px; /* Add some padding to the button */
+  background-color: #007bff; /* Change button color */
+  color: white; /* Change text color */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Add border radius */
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3; /* Change button color on hover */
 }
 .box_header {
   position: relative;
@@ -28,8 +47,15 @@
   right: 16px;
   top: 12px;
 }
-.box_profile {
+.inputandbutton {
   display: flex;
+  justify-content: center;
+}
+.qr {
+  align-items: center;
+}
+.box_profile {
+  justify-content: center;
   gap: 12px;
   padding: 17px 17px 5px 17px;
 }

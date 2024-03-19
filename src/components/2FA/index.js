@@ -4,12 +4,14 @@ import useClickOutside from "../../helpers/clickOutside";
 import PulseLoader from "react-spinners/PulseLoader";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import LoginInput from "../inputs/loginInput";
 export default function Enable2FA({ setVisible }) {
   const popup = useRef(null);
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => ({ ...state }));
-  const email = user.email;
+  const username = user.username;
   const [qrImageUrl, setQrImageUrl] = useState(null); // State to hold QR image URL
+  const [sixDigitCode, setSixDigitCode] = useState(""); // State to hold the 6-digit code
   useClickOutside(popup, () => {
     setVisible(false);
   });
@@ -19,14 +21,14 @@ export default function Enable2FA({ setVisible }) {
     const fetchQRCode = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `${process.env.REACT_APP_BACKEND_URL}/generateQR`,
+        const { data } = await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/generate2faSecret`,
           {
-            email,
+            username,
           }
         );
         if (data.success) {
-          setQrImageUrl(data.image);
+          setQrImageUrl(data.qrImageDataUrl);
         } else {
           console.error("Failed to generate QR code:", data.message);
         }
@@ -39,6 +41,23 @@ export default function Enable2FA({ setVisible }) {
 
     fetchQRCode();
   }, []); // Run only once on component mount
+
+  const handleQRInput = (e) => {
+    // Update the state with the 6-digit code entered by the user
+    setSixDigitCode(e.target.value);
+  };
+
+  const handleButtonClick = async () => {
+    // Handle button click event
+    const { response } = await axios.post(
+      `${process.env.REACT_APP_BACKEND_URL}/verifyOtp`,
+      {
+        username,
+        sixDigitCode,
+      }
+    );
+    sixDigitCode = response.message;
+  };
 
   return (
     <div className="blur">
@@ -56,12 +75,20 @@ export default function Enable2FA({ setVisible }) {
         </div>
         <div className="box_profile">
           {/* Display QR code image if available */}
-          {qrImageUrl && <img src={qrImageUrl} alt="QR Code" />}
+          {qrImageUrl && <img src={qrImageUrl} alt="QR Code" className="qr" />}
         </div>
-
-        <button className="post_submit" onClick={() => {}} disabled={loading}>
-          {loading ? <PulseLoader color="#fff" size={5} /> : "Post"}
-        </button>
+        {/* Input field for the 6-digit code */}
+        <div className="inputandbutton">
+          <input
+            type="text"
+            value={sixDigitCode}
+            onChange={handleQRInput}
+            placeholder="Enter 6-digit code"
+            maxLength={6} // Limit input to 6 characters
+          />
+          {/* Button for the user to click when they have entered their code */}
+          <button onClick={handleButtonClick}>Submit</button>
+        </div>
       </div>
     </div>
   );
