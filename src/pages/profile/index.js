@@ -17,11 +17,13 @@ import Friends from "./Friends";
 import Intro from "../../components/intro";
 import { useMediaQuery } from "react-responsive";
 import CreatePostPopup from "../../components/createPostPopup";
+import Enable2FA from "../../components/2FA";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { HashLoader } from "react-spinners";
 export default function Profile({ getAllPosts }) {
   const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
   const { username } = useParams();
   const navigate = useNavigate();
   const { user } = useSelector((state) => ({ ...state }));
@@ -114,6 +116,15 @@ export default function Profile({ getAllPosts }) {
         <CreatePostPopup
           user={user}
           setVisible={setVisible}
+          posts={profile?.posts}
+          dispatch={dispatch}
+          profile
+        />
+      )}
+      {visible2 && (
+        <Enable2FA
+          user={user}
+          setVisible={setVisible2}
           posts={profile?.posts}
           dispatch={dispatch}
           profile
@@ -219,6 +230,7 @@ export default function Profile({ getAllPosts }) {
                 photos={photos.resources}
                 othername={othername}
                 loading={loading}
+                setVisible={setVisible2}
               />
             </>
           )}

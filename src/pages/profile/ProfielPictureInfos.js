@@ -7,6 +7,7 @@ export default function ProfielPictureInfos({
   visitor,
   photos,
   othername,
+  setVisible,
 }) {
   const [show, setShow] = useState(false);
   const pRef = useRef(null);
@@ -69,6 +70,15 @@ export default function ProfielPictureInfos({
         <Friendship friendshipp={profile?.friendship} profileid={profile._id} />
       ) : (
         <div className="profile_w_right">
+          <div
+            className="blue_btn"
+            onClick={() => {
+              setVisible(true);
+            }}
+          >
+            <img src="../../../icons/plus.png" alt="" className="invert" />
+            <span>Enable 2FA</span>
+          </div>
           <div className="blue_btn">
             <img src="../../../icons/plus.png" alt="" className="invert" />
             <span>Add to story</span>
