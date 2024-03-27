@@ -2,7 +2,8 @@ import { Formik, Form } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import LoginInput from "../../components/inputs/loginInput";
-import { useState } from "react";
+import Login2fa from "../2FA/login2fa";
+import { useState, useEffect } from "react";
 import DotLoader from "react-spinners/DotLoader";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -16,7 +17,15 @@ export default function LoginForm({ setVisible }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, setLogin] = useState(loginInfos);
+  const [access, setAccess] = useState(false);
   const { email, password } = login;
+  const [loginStep2VerificationToken, setLoginStep2VerificationToken] =
+    useState("");
+  const [showInput, setShowInput] = useState(false);
+  const [visible2, setVisible2] = useState(false);
+  const [step2Input, setStep2Input] = useState(null);
+  const [loginInput, setLoginInput] = useState("");
+
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
     setLogin({ ...login, [name]: value });
@@ -30,6 +39,7 @@ export default function LoginForm({ setVisible }) {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const loginSubmit = async () => {
     try {
       setLoading(true);
@@ -40,14 +50,34 @@ export default function LoginForm({ setVisible }) {
           password,
         }
       );
-      dispatch({ type: "LOGIN", payload: data });
-      Cookies.set("user", JSON.stringify(data));
-      navigate("/");
+      setLoginInput(data);
+      setLoginStep2VerificationToken(data.loginStep2VerificationToken);
+      if (data.twofaEnabled) {
+        setVisible2(true);
+        if (!access) {
+          setShowInput(true);
+        }
+      } else {
+        //no 2 fa, just allow access
+        dispatch({ type: "LOGIN", payload: data });
+        Cookies.set("user", JSON.stringify(data));
+        navigate("/");
+      }
     } catch (error) {
       setLoading(false);
       setError(error.response.data.message);
     }
   };
+
+  useEffect(() => {
+    if (step2Input !== null) {
+      // Perform login after step2Input is set
+      dispatch({ type: "LOGIN", payload: step2Input });
+      Cookies.set("user", JSON.stringify(step2Input));
+      navigate("/");
+    }
+  }, [step2Input]); // Watch for changes in step2Input
+
   return (
     <div className="login_wrap">
       <div className="login_1">
@@ -88,6 +118,15 @@ export default function LoginForm({ setVisible }) {
               </Form>
             )}
           </Formik>
+          {visible2 && showInput && (
+            <Login2fa
+              setVisible={setVisible2}
+              loginStep2VerificationToken={loginStep2VerificationToken}
+              setAccess={setAccess}
+              setStep2Input={setStep2Input}
+            />
+          )}
+
           <Link to="/reset" className="forgot_password">
             Forgotten password?
           </Link>
