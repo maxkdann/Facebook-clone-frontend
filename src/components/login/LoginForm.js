@@ -25,6 +25,7 @@ export default function LoginForm({ setVisible }) {
   const [visible2, setVisible2] = useState(false);
   const [step2Input, setStep2Input] = useState(null);
   const [loginInput, setLoginInput] = useState("");
+  const [token, setToken] = useState("");
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -52,6 +53,7 @@ export default function LoginForm({ setVisible }) {
       );
       setLoginInput(data);
       setLoginStep2VerificationToken(data.loginStep2VerificationToken);
+      setToken(data.token);
       if (data.twofaEnabled) {
         setVisible2(true);
         if (!access) {
@@ -124,6 +126,7 @@ export default function LoginForm({ setVisible }) {
               loginStep2VerificationToken={loginStep2VerificationToken}
               setAccess={setAccess}
               setStep2Input={setStep2Input}
+              token={token}
             />
           )}
 

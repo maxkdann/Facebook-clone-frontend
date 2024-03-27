@@ -81,6 +81,7 @@ export default function Enable2FA({ setVisible }) {
           </div>
           <span>Enable 2FA</span>
         </div>
+
         <div className="box_profile">
           {!verified && qrImageUrl && (
             <img src={qrImageUrl} alt="QR Code" className="qr" />
@@ -89,6 +90,10 @@ export default function Enable2FA({ setVisible }) {
         <div className="twofamessage">{message}</div>
         {/* Input field for the 6-digit code */}
         <div className="inputandbutton">
+          {message == "" && (
+            <>Scan this code with your favourite mobile authenticator app.</>
+          )}
+
           {!verified && (
             <>
               <input

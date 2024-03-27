@@ -14,6 +14,7 @@
 }
 .twofamessage {
   text-align: center;
+  color: #007bff;
 }
 input[type="text"],
 button {
@@ -52,12 +53,29 @@ button:hover {
 }
 .inputandbutton {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.codeButton {
+  margin-top: 10px; /* Adjust margin as needed */
+}
+
+/* Additional styling for the submit button */
+.codeButton button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 .qr {
   align-items: center;
 }
 .box_profile {
+  display: flex;
   justify-content: center;
   gap: 12px;
   padding: 17px 17px 5px 17px;

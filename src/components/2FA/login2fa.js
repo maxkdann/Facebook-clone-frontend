@@ -7,12 +7,11 @@ export default function Login2fa({
   loginStep2VerificationToken,
   setAccess,
   setStep2Input,
+  token,
 }) {
   const popup = useRef(null);
-  const [loading, setLoading] = useState(false);
   const [twofaToken, setToken] = useState(""); // State to hold the 6-digit code
-  const [message, setMessage] = useState(""); // State to hold the 6-digit code
-  const [verified, setVerified] = useState(false);
+  const [message, setMessage] = useState("");
   const isMountedRef = useRef(true);
 
   useClickOutside(popup, () => {
@@ -37,16 +36,18 @@ export default function Login2fa({
         {
           loginStep2VerificationToken,
           twofaToken,
+          token,
         }
       );
       if (data.success && isMountedRef.current) {
+        console.log("data:", data);
         setAccess(true);
         setVisible(false);
         setStep2Input(data);
       }
     } catch (error) {
       console.error("Error in network request:", error); // Log any errors in the network request
-      setMessage("An error occurred at handlebuttonclick inside login2fa");
+      setMessage("Incorrect code please try again.");
     }
   };
 
@@ -69,16 +70,20 @@ export default function Login2fa({
         <div className="inputandbutton">
           {
             <>
-              <input
-                type="text"
-                value={twofaToken}
-                onChange={handleQRInput}
-                placeholder="Enter 6-digit code"
-                maxLength={6} // Limit input to 6 characters
-              />
-              <button onClick={handleButtonClick} type="submit">
-                Submit
-              </button>
+              <div className="codeInput">
+                <input
+                  type="text"
+                  value={twofaToken}
+                  onChange={handleQRInput}
+                  placeholder="Enter 6-digit code"
+                  maxLength={6} // Limit input to 6 characters
+                />
+              </div>
+              <div className="codeButton">
+                <button onClick={handleButtonClick} type="submit">
+                  Submit
+                </button>
+              </div>
             </>
           }
         </div>
