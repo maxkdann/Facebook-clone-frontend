@@ -84,7 +84,6 @@ export default function LoginForm({ setVisible }) {
     <div className="login_wrap">
       <div className="login_1">
         <img src="../../icons/facebook.svg" alt="" />
-        <span>Dummy site built for CP400S.</span>
       </div>
       <div className="login_2">
         <div className="login_2_wrap">
